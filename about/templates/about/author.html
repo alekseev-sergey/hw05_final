@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Об авторе проекта{% endblock %}
+{% block content %}
+{% load user_filters %}
+  <main role="main" class="container">
+      <div class="row">
+          <!-- Левый вспомогательный блок -->
+          <div class="col-md-3 mb-3 mt-1">
+              <div class="card">
+                  <div class="card-body">
+                      <ul class="list-group list-group-flush">
+                          <li class="list-group-item">
+                              <div class="h3">
+                                  Об авторе
+                              </div> 
+                          </li>
+                          <li class="list-group-item">
+                              <div class="h6 text-muted">
+                                <img src="../my_photo.JPEG" align="bottom"><br>
+                                Имя: Сергей<br>
+                                Фамилия: Алексеев<br>
+                                Дата рождения: 23.11.1992<br>
+                              </div>
+                          </li>
+                      </ul>                                               
+                  </div>                    
+              </div>                
+          </div>
+          <!-- Тело страницы -->
+          <div class="col-md-9">
+              <div class="card-body">                    
+                  <div class="card-text">
+                      <p>Привет!<br>
+                        Меня зовут Сергей, я студент Яндекс.Практикума. 
+                        Информация обо мне находится в разработке, а пока
+                        можете ознакомиться с моим <a href="https://github.com/alekseev-sergey">
+                        аккаунтом на GitHub</a> или прочитать последние <a href="{% url 'index' %}">
+                        посты </a> и выпить чашечку кофе.</p>
+                  </div>                    
+              </div>                
+          </div>            
+      </div>        
+  </main>
+{% endblock %}

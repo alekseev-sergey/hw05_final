@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Последние обновления{% endblock %}
+{% block header %}<h1>Последние обновления на сайте</h1>{% endblock %}
+{% load cache %}
+
+{% block content %}
+    <div class="container">
+    <!--Выбор ленты записей-->
+    {% include "menu.html" with index=True %}
+
+    {% cache 20 index_page %}
+        {% for post in page %}
+            {% include "posts/post_item.html" with post=post %}
+        {% endfor %}
+    {% endcache %}
+    {% include "paginator.html" %}
+    </div>
+{% endblock %}
