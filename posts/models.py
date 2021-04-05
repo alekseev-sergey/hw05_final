@@ -5,7 +5,7 @@ User = get_user_model()
 
 
 class Post(models.Model):
-    text = models.TextField(verbose_name="текст", help_text="Введите текст")
+    text = models.TextField(verbose_name="текст")
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
     author = models.ForeignKey(
         User,
@@ -20,12 +20,12 @@ class Post(models.Model):
         null=True,
         related_name="posts",
         verbose_name="группа",
-        help_text="Выберите группу"
     )
     image = models.ImageField(
-        upload_to='posts/',
+        upload_to="posts/",
         blank=True,
-        null=True)
+        null=True,
+    )
 
     def __str__(self):
         return self.text[:15]
@@ -69,12 +69,21 @@ class Follow(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='follower',
-        verbose_name='Пользователь, который подписывается',
+        related_name="follower",
+        verbose_name="Пользователь, который подписывается",
     )
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='following',
-        verbose_name='Пользователь, на которого подписываются',
+        related_name="following",
+        verbose_name="Пользователь, на которого подписываются",
     )
+
+    class Meta():
+        # Создаем уникальность полей с опцией ограничения
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "author"],
+                name="unique_object"
+            ),
+        ]

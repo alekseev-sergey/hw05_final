@@ -64,7 +64,7 @@ class CreateFormTests(TestCase):
             data=form_data,
             follow=True,
         )
-        self.assertRedirects(response, '/')
+        self.assertRedirects(response, reverse('index'))
         self.assertEqual(Post.objects.count(), posts_count + 1)
         self.assertTrue(Post.objects.filter(
             text='Новый пост',

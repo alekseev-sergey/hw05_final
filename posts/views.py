@@ -59,7 +59,7 @@ def new_post(request):
 
 
 def profile(request, username: str):
-    """Вовзращает страницу профиля"""
+    """Возвращает страницу профиля"""
     author = get_object_or_404(User, username=username)
     post_list = author.posts.all()
     post_count = post_list.count()
@@ -136,8 +136,8 @@ def follow_index(request):
     page_number = request.GET.get("page")
     page = paginator.get_page(page_number)
     context = {
-        'page': page,
-        'paginator': paginator,
+        "page": page,
+        "paginator": paginator,
     }
 
     return render(request, "follow.html", context)
@@ -146,9 +146,8 @@ def follow_index(request):
 @login_required
 def profile_follow(request, username):
     author = get_object_or_404(User, username=username)
-    if request.user == author:
-        return redirect("profile", username=username)
-    Follow.objects.get_or_create(user=request.user, author=author)
+    if request.user != author:
+        Follow.objects.get_or_create(user=request.user, author=author)
     return redirect("profile", username=username)
 
 

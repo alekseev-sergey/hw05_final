@@ -19,14 +19,14 @@
                 <ul class="list-group list-group-flush">
                 <li class="list-group-item">
                     <div class="h6 text-muted">
-                        Подписчиков: XXX <br />
-                        Подписан: XXX
+                        Подписчиков: {{ author.following.count }} <br/>
+                        Подписок: {{ author.follower.count }}
                     </div>
                 </li>
                 <li class="list-group-item">
                     <div class="h6 text-muted">
                         <!--Количество записей -->
-                        Записей: {{ count }}
+                        Записей: {{ author.posts.count }}
                     </div>
                 </li>
                 </ul>
