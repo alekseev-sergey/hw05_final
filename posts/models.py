@@ -5,13 +5,13 @@ User = get_user_model()
 
 
 class Post(models.Model):
-    text = models.TextField(verbose_name="текст")
+    text = models.TextField(verbose_name="текст", help_text="Введите текст")
     pub_date = models.DateTimeField("Дата публикации", auto_now_add=True)
     author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name="автор",
-        related_name="posts"
+        related_name="posts",
     )
     group = models.ForeignKey(
         "Group",
@@ -20,11 +20,13 @@ class Post(models.Model):
         null=True,
         related_name="posts",
         verbose_name="группа",
+        help_text="Выберите группу",
     )
     image = models.ImageField(
         upload_to="posts/",
         blank=True,
         null=True,
+        help_text="Выберите файл изображения"
     )
 
     def __str__(self):

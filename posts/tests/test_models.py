@@ -26,6 +26,7 @@ class PostModelTest(TestCase):
         help_texts = {
             'text': 'Введите текст',
             'group': 'Выберите группу',
+            'image': 'Выберите файл изображения',
         }
         for value, expected in help_texts.items():
             with self.subTest(value=value):

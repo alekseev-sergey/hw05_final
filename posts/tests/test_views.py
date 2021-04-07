@@ -121,25 +121,33 @@ class PostPagesTest(TestCase):
 
     def test_auth_user_can_comment(self):
         """Только авторизированный пользователь может комментировать посты."""
-        users = {
-            self.guest_client: False,
-            self.authorized_user: True,
-        }
-        for user, expected in users.items():
-            with self.subTest(user=user):
-                form_data = {"text": "Комментарий", }
-                user.post(
-                    reverse("add_comment",
-                            args=[self.authorized_user, self.post.id]),
-                    data=form_data,
-                    follow=True,
-                )
-                actual = Comment.objects.filter(
-                    post=self.post,
-                    author=users[self.authorized_user],
-                    text=form_data["text"],
-                ).exists()
-                self.assertEqual(actual, expected)
+        comment_count = Comment.objects.count()
+        form_data_first = {'text': 'Коммент 1-го пользователя(гость)', }
+        form_data_second = {'text': 'Коммент 2-го пользователя(авторизован)'}
+        first_response = self.guest_client
+        second_response = self.second_user_client
+        first_response.post(reverse(
+            'add_comment',
+            kwargs={'username': self.user, 'post_id': self.post.id},),
+            data=form_data_first,
+            follow=True,
+        )
+        second_response.post(reverse(
+            'add_comment',
+            kwargs={'username': self.user, 'post_id': self.post.id},),
+            data=form_data_second,
+            follow=True,
+        )
+        self.assertEqual(Comment.objects.count(), comment_count + 1)
+        self.assertTrue(Comment.objects.filter(
+            text='Коммент 2-го пользователя(авторизован)',
+            post=self.post,
+            author=self.second_user).exists()
+        )
+        self.assertFalse(Comment.objects.filter(
+            text='Коммент 1-го пользователя(гость)',
+            post=self.post).exists()
+        )
 
     def test_new_post_exist_for_followers(self):
         """Новая запись пользователя появляется в ленте тех, кто на него
@@ -165,28 +173,28 @@ class PostPagesTest(TestCase):
 
     def test_auth_user_can_follow(self):
         """Проверка подписки на автора"""
+        follow_count_first = Follow.objects.count()
         url_request = reverse("profile_follow", args=[self.second_user])
-        url_to_expected = True
-        follow = {url_request: url_to_expected, }
-        for url, expected in follow.items():
-            with self.subTest(url=url):
-                self.authorized_user.get(url)
-                actual = Follow.objects.filter(
-                    user=self.user,
-                    author=self.second_user
-                ).exists()
-                self.assertEqual(actual, expected)
+        self.authorized_user.get(url_request)
+        Follow.objects.filter(
+            user=self.user,
+            author=self.second_user
+        ).exists()
+        self.assertEqual(Follow.objects.count(), follow_count_first + 1)
+        follow_count_second = Follow.objects.count()
+        self.authorized_user.get(url_request)
+        self.assertEqual(Follow.objects.count(), follow_count_second)
 
     def test_auth_user_can_unfollow(self):
         """Проверка отписки от автора"""
+        follow_count_first = Follow.objects.count() + 1
         url_request = reverse("profile_unfollow", args=[self.second_user])
-        url_to_expected = False
-        unfollow = {url_request: url_to_expected, }
-        for url, expected in unfollow.items():
-            with self.subTest(url=url):
-                self.authorized_user.get(url)
-                actual = Follow.objects.filter(
-                    user=self.user,
-                    author=self.second_user
-                ).exists()
-                self.assertEqual(actual, expected)
+        self.authorized_user.get(url_request)
+        Follow.objects.filter(
+            user=self.user,
+            author=self.second_user
+        ).exists()
+        self.assertEqual(Follow.objects.count(), follow_count_first - 1)
+        follow_count_second = Follow.objects.count()
+        self.authorized_user.get(url_request)
+        self.assertEqual(Follow.objects.count(), follow_count_second)
