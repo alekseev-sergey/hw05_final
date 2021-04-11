@@ -146,7 +146,11 @@ dmypy.json
 .mypy_cache
 
 # папки со статикой и медиа
-static/
 posts/static/
 media/
+ngrok
+/static/admin
+/static/jquery
+/static/popper.js
+/static/bootstrap
 
